@@ -1,4 +1,3 @@
-const e = require("cors");
 const userServices = require("../services/user");
 
 exports.getUsers = async (req, res, next) => {
@@ -52,7 +51,7 @@ exports.addUser = async (req, res, next) => {
     }
 
     const data = await userServices.addUser(newUser);
-    res.status(200).json({
+    res.status(201).json({
       data,
       message: "User added successfully",
     });
@@ -93,7 +92,7 @@ exports.updateUser = async (req, res, next) => {
     }
 
     const data = await userServices.updateUser(id, selectedUser);
-    res.status(200).json({
+    res.status(201).json({
       data,
       message: "User updated successfully",
     });
@@ -107,7 +106,7 @@ exports.deleteUser = async (req, res, next) => {
     const id = parseInt(req?.params?.id);
 
     const data = await userServices.deleteUser(id);
-    req
+    res
       .status(200)
       .json({ data, message: `User with id ${id} deleted successfully` });
   } catch (error) {
