@@ -1,7 +1,11 @@
-const { Class } = require("../../models");
+const { Class, Student } = require("../../models");
 
 exports.getClasses = async () => {
-  const classes = await Class.findAll();
+  const classes = await Class.findAll({
+    include: {
+      model: Student,
+    },
+  });
 
   return classes;
 };
@@ -9,6 +13,9 @@ exports.getClasses = async () => {
 exports.getClassById = async (id) => {
   const selectedClass = await Class.findOne({
     where: { id },
+    include: {
+      model: Student,
+    },
   });
 
   if (selectedClass) {
