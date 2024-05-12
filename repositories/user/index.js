@@ -2,10 +2,6 @@ const bcrypt = require("bcrypt");
 const { User } = require("../../models");
 
 exports.getUsers = async () => {
-  // const users = [
-  //   { name: "user1", role: "admin", username: "user1", password: "password" },
-  // ];
-
   const users = await User.findAll();
 
   return users;
@@ -14,6 +10,18 @@ exports.getUsers = async () => {
 exports.getUserById = async (id) => {
   const user = await User.findOne({
     where: { id },
+  });
+
+  if (user) {
+    return user;
+  }
+
+  throw new Error("User not found!");
+};
+
+exports.getUserByUsername = async (username) => {
+  const user = await User.findOne({
+    where: { username },
   });
 
   if (user) {

@@ -2,16 +2,17 @@ const express = require("express");
 
 const router = express.Router();
 const classController = require("../controller/class");
+const { authMiddleware } = require("../middlewares/auth");
 
 router
   .route("/")
-  .get(classController.getClasses)
-  .post(classController.addClass);
+  .get(authMiddleware(["admin", "superadmin"]), classController.getClasses)
+  .post(authMiddleware(["admin", "superadmin"]), classController.addClass);
 
 router
   .route("/:id")
-  .get(classController.getClassById)
-  .put(classController.updateClass)
-  .delete(classController.deleteClass);
+  .get(authMiddleware(["admin", "superadmin"]), classController.getClassById)
+  .put(authMiddleware(["admin", "superadmin"]), classController.updateClass)
+  .delete(authMiddleware(["admin", "superadmin"]), classController.deleteClass);
 
 module.exports = router;

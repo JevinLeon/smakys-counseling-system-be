@@ -43,6 +43,12 @@ exports.addUser = async (req, res, next) => {
         message: "Username is required",
       });
     }
+    if (!role || role == "") {
+      return next({
+        statusCode: 500,
+        message: "Role is required",
+      });
+    }
     if (!password || password == "") {
       return next({
         statusCode: 500,
