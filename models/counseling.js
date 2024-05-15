@@ -8,8 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Counseling.hasMany(Counseling, { as: "children", foreignKey: "id" });
-      Counseling.belongsTo(Counseling, { as: "parent", foreignKey: "id" });
+      // Counseling.belongsTo(Counseling, {
+      //   as: "children",
+      //   foreignKey: "prevCounselingId",
+      // });
+      // Counseling.hasMany(Counseling, {
+      //   as: "parent",
+      //   foreignKey: "prevCounselingId",
+      // });
       Counseling.belongsTo(models.User, { foreignKey: "counselorId" });
     }
   }
@@ -27,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       ),
       arrivalType: DataTypes.ENUM("voluntary", "called", "referral"),
       status: DataTypes.ENUM("pending", "completed"),
-      isNew: DataTypes.BOOLEAN,
-      prevCounselingId: DataTypes.BOOLEAN,
+      // isNew: DataTypes.BOOLEAN,
+      // prevCounselingId: DataTypes.BOOLEAN,
       isGroup: DataTypes.BOOLEAN,
       counselorId: DataTypes.INTEGER,
       NISN: DataTypes.STRING,

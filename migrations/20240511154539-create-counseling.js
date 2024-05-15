@@ -22,7 +22,7 @@ module.exports = {
         allowNull: true,
       },
       date: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       counselingType: {
@@ -44,21 +44,21 @@ module.exports = {
         allowNull: false,
         defaultValue: "pending",
       },
-      isNew: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true,
-      },
-      prevCounselingId: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: {
-            tableName: "Counselings",
-          },
-          key: "id",
-        },
-      },
+      // isNew: {
+      //   type: Sequelize.BOOLEAN,
+      //   allowNull: false,
+      //   defaultValue: true,
+      // },
+      // prevCounselingId: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: true,
+      //   references: {
+      //     model: {
+      //       tableName: "Counselings",
+      //     },
+      //     key: "id",
+      //   },
+      // },
       isGroup: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
