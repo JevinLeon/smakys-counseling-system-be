@@ -1,4 +1,8 @@
+const excelJs = require("exceljs");
+const excelToJson = require("convert-excel-to-json");
+const fs = require("fs-extra");
 const studentServices = require("../services/student");
+const multer = require("multer");
 
 exports.getStudents = async (req, res, next) => {
   try {
@@ -211,6 +215,117 @@ exports.deleteStudent = async (req, res, next) => {
     res.status(200).json({
       data,
       message: "Student deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.exportExcel = async (req, res, next) => {
+  try {
+    let workbook = new excelJs.Workbook();
+
+    const sheet = workbook.addWorksheet("students");
+    sheet.columns = [
+      {
+        header: "NISN",
+        key: "NISN",
+        width: 25,
+      },
+      { header: "NIS", key: "NIS", width: 25 },
+      { header: "name", key: "name", width: 25 },
+      { header: "classId", key: "classId", width: 25 },
+      { header: "Class", key: "class", width: 25 },
+      { header: "phoneNo", key: "phoneNo", width: 25 },
+      { header: "address", key: "address", width: 50 },
+      { header: "healthHistory", key: "healthHistory", width: 25 },
+      { header: "email", key: "email", width: 25 },
+      { header: "dateOfBirth", key: "dateOfBirth", width: 25 },
+      { header: "placeOfBirth", key: "placeOfBirth", width: 25 },
+      { header: "universityTarget", key: "universityTarget", width: 25 },
+      { header: "status", key: "status", width: 25 },
+      { header: "guardianName", key: "guardianName", width: 25 },
+      { header: "guardianJob", key: "guardianJob", width: 25 },
+      { header: "guardianPhoneNo", key: "guardianPhoneNo", width: 25 },
+    ];
+
+    const students = await studentServices.getStudents();
+
+    await students.map((student, i) => {
+      let row = sheet.addRow({
+        NISN: student.NISN,
+        NIS: student.NIS,
+        name: student.name,
+        classId: student.classId,
+        phoneNo: student.phoneNo,
+        address: student.address,
+        healthHistory: student.healthHistory,
+        email: student.email,
+        dateOfBirth: student.dateOfBirth,
+        placeOfBirth: student.placeOfBirth,
+        universityTarget: student.universityTarget,
+        status: student.status,
+        guardianName: student.guardianName,
+        guardianJob: student.guardianJob,
+        guardianPhoneNo: student.guardianPhoneNo,
+      });
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment;filename=" + "student-export.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.addStudentsWithExcel = async (req, res, next) => {
+  try {
+    if (req.file?.filename == null || req.file?.filename == "undefined") {
+      return next({
+        statusCode: 400,
+        message: "No file specified",
+      });
+    }
+
+    const filePath = "uploads/" + req.file.filename;
+
+    const excelData = excelToJson({
+      sourceFile: filePath,
+      header: {
+        rows: 1,
+      },
+      columnToKey: {
+        "*": "{{columnHeader}}",
+      },
+    });
+
+    fs.remove(filePath);
+
+    await studentServices.truncate();
+    const data = await studentServices.addManyStudents(excelData.students);
+
+    res.status(200).json({
+      data,
+      excelData,
+      message: "File uploaded successfully",
     });
   } catch (error) {
     next(error);

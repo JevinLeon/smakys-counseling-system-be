@@ -12,12 +12,10 @@ module.exports = {
       NISN: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       NIS: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
       name: {
         type: Sequelize.STRING,

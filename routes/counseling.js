@@ -4,6 +4,8 @@ const router = express.Router();
 const counselingController = require("../controller/counseling");
 const { authMiddleware } = require("../middlewares/auth");
 
+router.get("/export-excel", counselingController.exportExcel);
+
 router
   .route("/")
   .get(

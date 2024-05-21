@@ -1,3 +1,4 @@
+const excelJs = require("exceljs");
 const counselingServices = require("../services/counseling");
 
 exports.getCounselings = async (req, res, next) => {
@@ -162,6 +163,72 @@ exports.deleteCounseling = async (req, res, next) => {
       data,
       message: "Counseling deleted successfully",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.exportExcel = async (req, res, next) => {
+  try {
+    let workbook = new excelJs.Workbook();
+
+    const sheet = workbook.addWorksheet("counselings");
+    sheet.columns = [
+      { header: "Title", key: "title", width: 25 },
+      { header: "Date", key: "date", width: 25 },
+      { header: "Description", key: "description", width: 25 },
+      { header: "Notes", key: "notes", width: 25 },
+      {
+        header: "Counseling Component / Komponen Konseling",
+        key: "counselingType",
+        width: 25,
+      },
+      {
+        header: "Arrival Type / Riwayat Kedatangan",
+        key: "arrivalType",
+        width: 25,
+      },
+      { header: "Status", key: "status", width: 25 },
+      { header: "Counselor", key: "counselor", width: 25 },
+      { header: "Students NISN", key: "studentsNISN", width: 25 },
+    ];
+
+    const counselings = await counselingServices.getCounselings();
+
+    await counselings.map((counseling, i) => {
+      let row = sheet.addRow({
+        title: counseling.title,
+        date: counseling.date,
+        description: counseling.description,
+        notes: counseling.notes,
+        counselingType: counseling.counselingType,
+        arrivalType: counseling.arrivalType,
+        status: counseling.status,
+        counselor: counseling.User.name,
+        studentsNISN: counseling.NISN,
+      });
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment;filename=" + "counseling-export.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
   } catch (error) {
     next(error);
   }

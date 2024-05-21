@@ -29,10 +29,41 @@ exports.profile = async (id) => {
     throw new Error("User not found!");
   }
 
-  if (user?.dataValues?.password) {
-    delete user.dataValues.password;
-  } else {
-    delete user?.password;
-  }
+  // if (user?.dataValues?.password) {
+  //   delete user.dataValues.password;
+  // } else {
+  //   delete user?.password;
+  // }
+
   return user;
+};
+
+exports.changePassword = async (id, payload) => {
+  const user = await userRepo.getUserById(id);
+
+  if (!user) {
+    throw new Error("User not found!");
+  }
+
+  const isPasswordValid = await bcrypt.compare(
+    payload.currentPassword,
+    user.password
+  );
+  if (!isPasswordValid) {
+    throw new Error("Wrong password!");
+  }
+
+  const newUserPassword = await bcrypt.hashSync(payload.newPassword, 10);
+
+  const updatedUser = await userRepo.updateUser(id, {
+    ...user,
+    password: newUserPassword,
+  });
+
+  // if (updatedUser?.dataValues?.password) {
+  //   delete updatedUser.dataValues.password;
+  // } else {
+  //   delete updatedUser?.password;
+  // }
+  return updatedUser;
 };

@@ -1,8 +1,11 @@
+const multer = require("multer");
 const express = require("express");
 
 const router = express.Router();
 const classController = require("../controller/class");
 const { authMiddleware } = require("../middlewares/auth");
+
+router.get("/export-excel", classController.exportExcel);
 
 router
   .route("/")

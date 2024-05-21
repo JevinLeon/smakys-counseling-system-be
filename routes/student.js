@@ -1,8 +1,19 @@
+const multer = require("multer");
 const express = require("express");
+
+const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 const studentController = require("../controller/student");
 const { authMiddleware } = require("../middlewares/auth");
+
+router.get("/export-excel", studentController.exportExcel);
+router.post(
+  "/excel",
+  authMiddleware(["admin", "superadmin"]),
+  upload.single("file"),
+  studentController.addStudentsWithExcel
+);
 
 router
   .route("/")

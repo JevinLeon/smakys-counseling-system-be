@@ -49,3 +49,18 @@ exports.deleteStudent = async (id) => {
 
   throw new Error("Student not found!");
 };
+
+exports.truncate = async () => {
+  const data = await Student.destroy({
+    where: {},
+    truncate: true,
+    paranoid: false,
+  });
+  // const data = await Student.truncate();
+  return data;
+};
+
+exports.addManyStudents = async (payload) => {
+  const newStudents = await Student.bulkCreate(payload);
+  return newStudents;
+};

@@ -10,5 +10,9 @@ router.get(
   authMiddleware(["admin", "superadmin"]),
   authController.profile
 );
-
+router.post(
+  "/change-password",
+  authMiddleware(["admin", "superadmin"]),
+  authController.changePassword
+);
 module.exports = router;

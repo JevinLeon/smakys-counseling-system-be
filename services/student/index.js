@@ -24,3 +24,13 @@ exports.deleteStudent = async (id) => {
   const data = await studentRepo.deleteStudent(id);
   return data;
 };
+
+exports.truncate = async () => {
+  const data = await studentRepo.truncate();
+  return data;
+};
+
+exports.addManyStudents = async (payload) => {
+  const data = await studentRepo.addManyStudents(payload);
+  return data;
+};

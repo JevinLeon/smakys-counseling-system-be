@@ -1,4 +1,4 @@
-const { login, profile } = require("../services/auth");
+const { login, profile, changePassword } = require("../services/auth");
 
 exports.login = async (req, res, next) => {
   try {
@@ -35,6 +35,24 @@ exports.profile = async (req, res, next) => {
     res.status(200).json({
       data,
       message: "User profile fetched successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    console.log(req.body);
+    const data = await changePassword(req.user.id, {
+      currentPassword,
+      newPassword,
+    });
+
+    res.status(200).json({
+      data,
+      message: "Password changed successfully",
     });
   } catch (error) {
     next(error);
