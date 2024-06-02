@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Classes {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @default(now()) @db.Timestamp(6)
+  deletedAt DateTime?  @db.Timestamp(6)
+  Students  Students[]
+}
+
+model CounselingLogs {
+  id           Int          @id @default(autoincrement())
+  activity     String?      @db.VarChar(255)
+  userId       Int?
+  counselingId Int?
+  date         DateTime     @default(now()) @db.Timestamp(6)
+  createdAt    DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime     @default(now()) @db.Timestamp(6)
+  deletedAt    DateTime?    @db.Timestamp(6)
+  Counselings  Counselings? @relation(fields: [counselingId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Users        Users?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Counselings {
+  id             Int                             @id @default(autoincrement())
+  title          String                          @db.VarChar(255)
+  description    String?
+  notes          String?
+  date           DateTime                        @db.Timestamp(6)
+  counselingType enum_Counselings_counselingType
+  arrivalType    enum_Counselings_arrivalType    @default(called)
+  status         enum_Counselings_status         @default(pending)
+  isGroup        Boolean                         @default(false)
+  counselorId    Int
+  NISN           String                          @db.VarChar(255)
+  createdAt      DateTime                        @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime                        @default(now()) @db.Timestamp(6)
+  deletedAt      DateTime?                       @db.Timestamp(6)
+  CounselingLogs CounselingLogs[]
+  Users          Users                           @relation(fields: [counselorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model SequelizeMeta {
+  name String @id @db.VarChar(255)
+}
+
+model Students {
+  id               Int                  @id @default(autoincrement())
+  NISN             String               @db.VarChar(255)
+  NIS              String               @db.VarChar(255)
+  name             String               @db.VarChar(255)
+  classId          Int?
+  phoneNo          String               @db.VarChar(255)
+  address          String
+  healthHistory    String?
+  email            String               @db.VarChar(255)
+  dateOfBirth      DateTime             @db.Timestamp(6)
+  placeOfBirth     String               @db.VarChar(255)
+  universityTarget String?              @db.VarChar(255)
+  status           enum_Students_status
+  guardianName     String               @db.VarChar(255)
+  guardianJob      String               @db.VarChar(255)
+  guardianPhoneNo  String               @db.VarChar(255)
+  createdAt        DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt        DateTime             @default(now()) @db.Timestamp(6)
+  deletedAt        DateTime?            @db.Timestamp(6)
+  Classes          Classes?             @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Users {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(255)
+  username       String           @unique @db.VarChar(255)
+  role           enum_Users_role  @default(admin)
+  password       String
+  createdAt      DateTime         @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime         @default(now()) @db.Timestamp(6)
+  deletedAt      DateTime?        @db.Timestamp(6)
+  CounselingLogs CounselingLogs[]
+  Counselings    Counselings[]
+}
+
+enum enum_Counselings_arrivalType {
+  voluntary
+  called
+  referral
+}
+
+enum enum_Counselings_counselingType {
+  Layanan_Dasar___Seminar                       @map("Layanan Dasar - Seminar")
+  Layanan_Dasar___Klasikal                      @map("Layanan Dasar - Klasikal")
+  Layanan_Responsive                            @map("Layanan Responsive")
+  Layanan_Penempatan_dan_Perencanaan_Individual @map("Layanan Penempatan dan Perencanaan Individual")
+}
+
+enum enum_Counselings_status {
+  pending
+  completed
+}
+
+enum enum_Students_status {
+  active
+  graduated
+  dropped
+}
+
+enum enum_Users_role {
+  admin
+  superadmin
+}
