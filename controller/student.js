@@ -303,7 +303,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       });
     }
 
-    const filePath = "uploads/" + req.file.filename;
+    const filePath = "/tmp/" + req.file.filename;
 
     const excelData = excelToJson({
       sourceFile: filePath,
