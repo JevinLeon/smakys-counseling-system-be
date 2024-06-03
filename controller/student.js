@@ -2,6 +2,7 @@ const excelJs = require("exceljs");
 const excelToJson = require("convert-excel-to-json");
 const fs = require("fs-extra");
 const studentServices = require("../services/student");
+const multer = require("multer");
 
 exports.getStudents = async (req, res, next) => {
   try {
@@ -303,7 +304,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       });
     }
 
-    const filePath = "/tmp/" + req.file.filename;
+    const filePath = "uploads/" + req.file.filename;
 
     const excelData = excelToJson({
       sourceFile: filePath,
