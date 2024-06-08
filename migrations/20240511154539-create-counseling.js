@@ -22,7 +22,7 @@ module.exports = {
         allowNull: true,
       },
       date: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       counselingType: {
@@ -80,17 +80,17 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("NOW"),
       },
       deletedAt: {
         allowNull: true,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
       },
     });
   },

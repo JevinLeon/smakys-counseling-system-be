@@ -1,9 +1,9 @@
-const { Counseling, User } = require("../../models");
+const prisma = require("../../prisma");
 
 exports.getCounselings = async () => {
-  const counselings = await Counseling.findAll({
+  const counselings = await prisma.counselings.findMany({
     include: {
-      model: User,
+      Users: true,
     },
   });
 
@@ -11,10 +11,10 @@ exports.getCounselings = async () => {
 };
 
 exports.getCounselingById = async (id) => {
-  const selectedCounseling = await Counseling.findOne({
+  const selectedCounseling = await prisma.counselings.findUnique({
     where: { id },
     include: {
-      model: User,
+      Users: true,
     },
   });
 
@@ -26,24 +26,35 @@ exports.getCounselingById = async (id) => {
 };
 
 exports.addCounseling = async (payload) => {
-  const newCounseling = await Counseling.create({ ...payload });
+  const newCounseling = await prisma.counselings.create({
+    data: { ...payload },
+  });
   return newCounseling;
 };
 
 exports.updateCounseling = async (id, payload) => {
-  const selectedCounseling = await Counseling.findOne({ where: { id } });
+  const selectedCounseling = await prisma.counselings.findUnique({
+    where: { id },
+  });
 
   if (selectedCounseling) {
-    const updatedCounseling = await selectedCounseling.update({ ...payload });
+    const updatedCounseling = await prisma.counselings.update({
+      where: { id },
+      data: { ...payload },
+    });
     return updatedCounseling;
   }
   throw new Error("Counseling not found!");
 };
 
 exports.deleteCounseling = async (id) => {
-  const selectedCounseling = await Counseling.findOne({ where: { id } });
+  const selectedCounseling = await prisma.counselings.findUnique({
+    where: { id },
+  });
   if (selectedCounseling) {
-    const deletedCounseling = await selectedCounseling.destroy();
+    const deletedCounseling = await prisma.counselings.delete({
+      where: { id },
+    });
     return deletedCounseling;
   }
 

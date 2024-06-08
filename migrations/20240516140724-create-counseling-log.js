@@ -33,23 +33,23 @@ module.exports = {
         },
       },
       date: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("NOW"),
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         defaultValue: Sequelize.fn("NOW"),
       },
       deletedAt: {
         allowNull: true,
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
       },
     });
   },

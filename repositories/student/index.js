@@ -1,9 +1,9 @@
-const { Student, Class } = require("../../models");
+const prisma = require("../../prisma");
 
 exports.getStudents = async () => {
-  const students = await Student.findAll({
+  const students = await prisma.students.findMany({
     include: {
-      model: Class,
+      Classes: true,
     },
   });
 
@@ -11,10 +11,10 @@ exports.getStudents = async () => {
 };
 
 exports.getStudentById = async (id) => {
-  const selectedStudent = await Student.findOne({
+  const selectedStudent = await prisma.students.findUnique({
     where: { id },
     include: {
-      model: Class,
+      Classes: true,
     },
   });
 
@@ -26,24 +26,27 @@ exports.getStudentById = async (id) => {
 };
 
 exports.addStudent = async (payload) => {
-  const newStudent = await Student.create({ ...payload });
+  const newStudent = await prisma.students.create({ data: { ...payload } });
   return newStudent;
 };
 
 exports.updateStudent = async (id, payload) => {
-  const selectedStudent = await Student.findOne({ where: { id } });
+  const selectedStudent = await prisma.students.findUnique({ where: { id } });
 
   if (selectedStudent) {
-    const updatedStudent = await selectedStudent.update({ ...payload });
+    const updatedStudent = await prisma.students.update({
+      where: { id },
+      data: { ...payload },
+    });
     return updatedStudent;
   }
   throw new Error("Student not found!");
 };
 
 exports.deleteStudent = async (id) => {
-  const selectedStudent = await Student.findOne({ where: { id } });
+  const selectedStudent = await prisma.students.findUnique({ where: { id } });
   if (selectedStudent) {
-    const deletedStudent = await selectedStudent.destroy();
+    const deletedStudent = await prisma.students.delete({ where: { id } });
     return deletedStudent;
   }
 
@@ -51,16 +54,12 @@ exports.deleteStudent = async (id) => {
 };
 
 exports.truncate = async () => {
-  const data = await Student.destroy({
-    where: {},
-    truncate: true,
-    paranoid: false,
-  });
+  const data = await prisma.students.deleteMany({});
   // const data = await Student.truncate();
   return data;
 };
 
 exports.addManyStudents = async (payload) => {
-  const newStudents = await Student.bulkCreate(payload);
+  const newStudents = await prisma.students.createMany({ data: payload });
   return newStudents;
 };
