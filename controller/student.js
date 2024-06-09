@@ -346,7 +346,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       message: "File uploaded successfully",
     });
   } catch (error) {
-    if (error.meta.field_name == "Students_classId_fkey (index)")
+    if (error?.meta?.field_name == "Students_classId_fkey (index)")
       error.message = "Class Id is not valid! Please enter a valid class id";
 
     next(error);
