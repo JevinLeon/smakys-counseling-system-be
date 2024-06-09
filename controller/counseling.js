@@ -204,7 +204,7 @@ exports.exportExcel = async (req, res, next) => {
         counselingType: counseling.counselingType,
         arrivalType: counseling.arrivalType,
         status: counseling.status,
-        counselor: counseling.User.name,
+        counselor: counseling.Users.name,
         studentsNISN: counseling.NISN,
       });
 
@@ -224,7 +224,7 @@ exports.exportExcel = async (req, res, next) => {
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment;filename=" + "counseling-export.xlsx"
+      "attachment;filename=" + "services-export.xlsx"
     );
 
     await workbook.xlsx.write(res);

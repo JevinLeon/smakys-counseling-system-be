@@ -247,7 +247,6 @@ exports.exportExcel = async (req, res, next) => {
       { header: "NIS", key: "NIS", width: 25 },
       { header: "name", key: "name", width: 25 },
       { header: "classId", key: "classId", width: 25 },
-      { header: "Class", key: "class", width: 25 },
       { header: "phoneNo", key: "phoneNo", width: 25 },
       { header: "address", key: "address", width: 50 },
       { header: "healthHistory", key: "healthHistory", width: 25 },
