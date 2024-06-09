@@ -1,4 +1,3 @@
-const { Class, Student } = require("../../models");
 const prisma = require("../../prisma");
 
 exports.getClasses = async () => {
