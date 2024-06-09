@@ -1,9 +1,10 @@
 const { Class, Student } = require("../../models");
+const prisma = require("../../prisma");
 
 exports.getClasses = async () => {
-  const classes = await Class.findAll({
+  const classes = await prisma.classes.findMany({
     include: {
-      model: Student,
+      Students: true,
     },
   });
 
@@ -11,10 +12,10 @@ exports.getClasses = async () => {
 };
 
 exports.getClassById = async (id) => {
-  const selectedClass = await Class.findOne({
+  const selectedClass = await prisma.classes.findUnique({
     where: { id },
     include: {
-      model: Student,
+      Students: true,
     },
   });
 
@@ -26,24 +27,27 @@ exports.getClassById = async (id) => {
 };
 
 exports.addClass = async (payload) => {
-  const newClass = await Class.create({ ...payload });
+  const newClass = await prisma.classes.create({ data: { ...payload } });
   return newClass;
 };
 
 exports.updateClass = async (id, payload) => {
-  const selectedClass = await Class.findOne({ where: { id } });
+  const selectedClass = await prisma.classes.findUnique({ where: { id } });
 
   if (selectedClass) {
-    const updatedClass = await selectedClass.update({ ...payload });
+    const updatedClass = await prisma.classes.update({
+      where: { id },
+      data: { ...payload },
+    });
     return updatedClass;
   }
   throw new Error("Class not found!");
 };
 
 exports.deleteClass = async (id) => {
-  const selectedClass = await Class.findOne({ where: { id } });
+  const selectedClass = await prisma.classes.findUnique({ where: { id } });
   if (selectedClass) {
-    const deletedClass = await selectedClass.destroy();
+    const deletedClass = await prisma.classes.delete({ where: { id } });
     return deletedClass;
   }
 

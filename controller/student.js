@@ -75,6 +75,12 @@ exports.addStudent = async (req, res, next) => {
         statusCode: 500,
         message: "Student date of birth is required",
       });
+    } else {
+      const dateOfBirth = new Date(
+        Date.parse(new Date(newStudent.dateOfBirth).toUTCString()) -
+          new Date(newStudent.dateOfBirth).getTimezoneOffset() * 60000
+      );
+      newStudent.dateOfBirth = dateOfBirth;
     }
     if (!newStudent.placeOfBirth || newStudent.placeOfBirth == "") {
       return next({
@@ -163,6 +169,12 @@ exports.updateStudent = async (req, res, next) => {
         statusCode: 500,
         message: "Student date of birth is required",
       });
+    } else {
+      const dateOfBirth = new Date(
+        Date.parse(new Date(selectedStudent.dateOfBirth).toUTCString()) -
+          new Date(selectedStudent.dateOfBirth).getTimezoneOffset() * 60000
+      );
+      selectedStudent.dateOfBirth = dateOfBirth;
     }
     if (!selectedStudent.placeOfBirth || selectedStudent.placeOfBirth == "") {
       return next({
@@ -319,6 +331,13 @@ exports.addStudentsWithExcel = async (req, res, next) => {
     fs.remove(filePath);
 
     await studentServices.truncate();
+    excelData.students.forEach((student) => {
+      const dateOfBirth = new Date(
+        Date.parse(new Date(student.dateOfBirth).toUTCString()) -
+          new Date(student.dateOfBirth).getTimezoneOffset() * 60000
+      );
+      student.dateOfBirth = dateOfBirth;
+    });
     const data = await studentServices.addManyStudents(excelData.students);
 
     res.status(200).json({
@@ -327,6 +346,9 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       message: "File uploaded successfully",
     });
   } catch (error) {
+    if (error.meta.field_name == "Students_classId_fkey (index)")
+      error.message = "Class Id is not valid! Please enter a valid class id";
+
     next(error);
   }
 };

@@ -22,7 +22,7 @@ module.exports = {
         allowNull: true,
       },
       date: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         allowNull: false,
       },
       counselingType: {

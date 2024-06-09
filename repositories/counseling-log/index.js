@@ -1,23 +1,19 @@
-const { CounselingLog, User, Counseling } = require("../../models");
+const prisma = require("../../prisma");
 
 exports.getCounselingLogs = async () => {
-  const counselingLogs = await CounselingLog.findAll({
-    include: [
-      {
-        model: Counseling,
-        paranoid: false,
-      },
-      {
-        model: User,
-        paranoid: false,
-      },
-    ],
+  const counselingLogs = await prisma.counselingLogs.findMany({
+    include: {
+      Counselings: true,
+      Users: true,
+    },
   });
 
   return counselingLogs;
 };
 
 exports.addCounselingLog = async (payload) => {
-  const newCounselingLog = await CounselingLog.create({ ...payload });
+  const newCounselingLog = await prisma.counselingLogs.create({
+    data: { ...payload },
+  });
   return newCounselingLog;
 };
