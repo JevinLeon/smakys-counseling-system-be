@@ -5,7 +5,7 @@ const process = require("process");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), "/uploads"));
+    cb(null, path.join(process.cwd(), "/tmp"));
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
