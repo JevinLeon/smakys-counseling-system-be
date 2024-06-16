@@ -1,9 +1,11 @@
 const multer = require("multer");
 const express = require("express");
+const path = require("path");
+const process = require("process");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.env.NODE_ENV == "development" ? "/uploads" : "./uploads");
+    cb(null, path.join(process.cwd(), "/uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
