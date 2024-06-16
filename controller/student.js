@@ -328,7 +328,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       },
     });
 
-    fs.remove(filePath);
+    // fs.remove(filePath);
 
     await studentServices.truncate();
     excelData.students.forEach((student) => {
