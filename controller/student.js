@@ -309,14 +309,17 @@ exports.exportExcel = async (req, res, next) => {
 
 exports.addStudentsWithExcel = async (req, res, next) => {
   try {
-    if (req.file?.filename == null || req.file?.filename == "undefined") {
+    console.log("file received:", req.file);
+
+    if (!req.file) {
       return next({
         statusCode: 400,
         message: "No file specified",
       });
     }
 
-    const filePath = path.join("tmp/", req.file.filename);
+    const filePath = path.join("/tmp", req.file.originalname);
+    await fs.writeFile(filePath, req.file.buffer);
 
     const excelData = excelToJson({
       sourceFile: filePath,
@@ -328,7 +331,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       },
     });
 
-    // fs.remove(filePath);
+    fs.remove(filePath);
 
     await studentServices.truncate();
     excelData.students.forEach((student) => {
@@ -346,6 +349,7 @@ exports.addStudentsWithExcel = async (req, res, next) => {
       message: "File uploaded successfully",
     });
   } catch (error) {
+    console.log("error:", error);
     if (error?.meta?.field_name == "Students_classId_fkey (index)")
       error.message = "Class Id is not valid! Please enter a valid class id";
 

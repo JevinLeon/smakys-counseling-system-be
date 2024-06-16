@@ -3,16 +3,16 @@ const express = require("express");
 const path = require("path");
 const process = require("process");
 
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), "/tmp"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(process.cwd(), "/tmp"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage });
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 const studentController = require("../controller/student");
